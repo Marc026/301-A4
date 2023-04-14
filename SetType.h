@@ -72,7 +72,10 @@ private:
     mutable typename forward_list<T>::iterator bucketIter;	// The iterator of the current bucket
 
     // Any other private functions and variables you want/need
+
 };
+
+
 
 #include "SetType.cpp"
 

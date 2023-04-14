@@ -10,6 +10,98 @@ SetType<T>::SetType() {
     buckets = new forward_list<T>[DEFAULT_BUCKETS];
 
     // Your code here
+    numBuckets = DEFAULT_BUCKETS;
+    numElems = 0;
+    maxLoad = DEFAULT_LOAD_FACTOR;
+}
+
+template<class T>
+SetType<T>::SetType(int numBucks) {
+    numBuckets = numBucks;
+    numElems = 0;
+    maxLoad = DEFAULT_LOAD_FACTOR;
+}
+
+template<class T>
+void SetType<T>::Add(T elem) {
+    int bucket = GetHashIndex(elem);
+    bool found = false;
+
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
+        if (*it == elem) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        int bucket = GetHashIndex(elem);
+        buckets[bucket].push_front(elem);
+        numElems++;
+    }
+}
+
+template<class T>
+void SetType<T>::Remove(T elem) {
+    int bucket = GetHashIndex(elem);
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
+        if (*it == elem) {
+            buckets[bucket].remove(*it);
+            --numElems;
+            return;
+        }
+    }
+}
+
+template<class T>
+bool SetType<T>::Contains(T elem) {
+    int bucket = GetHashIndex(elem);
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
+        if (*it == elem) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template<class T>
+void SetType<T>::MakeEmpty() {
+    for (int i = 0; i < numBuckets; ++i) {
+        buckets[i].clear();
+    }
+    numElems = 0;
+    ResetIterator();
+}
+
+template<class T>
+double SetType<T>::LoadFactor() const {
+    return 0;
+}
+
+template<class T>
+void SetType<T>::ResetIterator() {
+
+}
+
+template<class T>
+void SetType<T>::copySet(const SetType &otherSet) {
+    // Copy over bucket count and max load factor
+    this->numBuckets = otherSet.numBuckets;
+    this->maxLoad = otherSet.maxLoad;
+    // Allocate new buckets array
+    this->buckets = new forward_list<T>[this->numBuckets];
+    // Loop through each bucket in otherSet
+    for (int i = 0; i < otherSet.numBuckets; i++) {
+        // Loop through each item in the bucket
+        for (auto const& elem : otherSet.buckets[i]) {
+            // Calculate the hash index for the item
+            int index = this->GetHashIndex(elem);
+            // Add the item to the appropriate bucket
+            this->buckets[index].push_front(elem);
+            // Increase the number of elements in the set
+            this->numElems++;
+        }
+    }
 }
 
 template<class T>
@@ -100,6 +192,13 @@ template<class T>
 SetType<T>& SetType<T>::operator=(SetType const &other) {
 
     // Your code here
+    // Check for self-assignment
+    if (this != &other) {
+        // Clear current set
+        this->MakeEmpty();
+        // Copy over data from otherSet
+        this->copySet(other);
+    }
 
     return *this;
 }
@@ -113,5 +212,3 @@ void SetType<T>::Rehash(int newNumBuckets) {
 
     *this = rehashedSet;
 }
-
-
