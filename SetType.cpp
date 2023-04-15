@@ -28,14 +28,13 @@ void SetType<T>::Add(T elem) {
     bool found = false;
 
     for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
-        if (*it == elem) {
+        if (*it == elem && Contains(elem)) {
             found = true;
             break;
         }
     }
 
-    if (!found) {
-        int bucket = GetHashIndex(elem);
+    if (!found && !Contains(elem)) {
         buckets[bucket].push_front(elem);
         numElems++;
     }
@@ -45,7 +44,7 @@ template<class T>
 void SetType<T>::Remove(T elem) {
     int bucket = GetHashIndex(elem);
     for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
-        if (*it == elem) {
+        if (*it == elem && Contains(elem)) {
             buckets[bucket].remove(*it);
             --numElems;
             return;
