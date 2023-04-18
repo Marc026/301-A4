@@ -179,9 +179,20 @@ SetType<T> SetType<T>::operator*(SetType& otherSet) {
 
 template<class T>
 SetType<T> SetType<T>::operator-(SetType& otherSet) {
-    SetType<T> result;
+    SetType<T> result(numBuckets);
 
     // Your code here
+    // Iterate over the elements in this set
+    for (int i = 0; i < numBuckets; i++) {
+        for (T elem : buckets[i]) {
+            // Check if the element is not present in the other set
+            if (!otherSet.Contains(elem)) {
+                // Add the element to the result set
+                result.Add(elem);
+            }
+        }
+    }
+
 
     return result;
 }
