@@ -24,7 +24,7 @@ public:
     // Constructors
     SetType();
     explicit SetType(int numBucks);
-    SetType(SetType& other);
+    SetType(SetType& otherSet);
 
     ~SetType();
 

@@ -17,36 +17,40 @@ SetType<T>::SetType() {
 
 template<class T>
 SetType<T>::SetType(int numBucks) {
-    numBuckets = numBucks;
+    this->numBuckets = numBucks;
+    buckets = new forward_list<T>[numBucks];
     numElems = 0;
     maxLoad = DEFAULT_LOAD_FACTOR;
+    currBucket = 0;
+    iterCount = 0;
 }
 
 template<class T>
 void SetType<T>::Add(T elem) {
     int bucket = GetHashIndex(elem);
-    bool found = false;
 
-    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
-        if (*it == elem && Contains(elem)) {
-            found = true;
-            break;
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); it++) {
+        if (*it == elem) {
+            return;
         }
     }
+    buckets[bucket].push_front(elem);
+    numElems++;
 
-    if (!found && !Contains(elem)) {
-        buckets[bucket].push_front(elem);
-        numElems++;
+    if (LoadFactor() > maxLoad) {
+        int newNumBuckets = numBuckets * 2;
+        //Rehash(newNumBuckets);
     }
 }
 
 template<class T>
 void SetType<T>::Remove(T elem) {
     int bucket = GetHashIndex(elem);
-    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
-        if (*it == elem && Contains(elem)) {
+
+    for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); it++) {
+        if (*it == elem) {
             buckets[bucket].remove(*it);
-            --numElems;
+            numElems--;
             return;
         }
     }
@@ -74,8 +78,14 @@ void SetType<T>::MakeEmpty() {
 
 template<class T>
 double SetType<T>::LoadFactor() const {
-    return 0;
+    // validate number of buckets is greater than 0
+    if(numBuckets > 0)
+        // load factor = current number of elements divided by number of buckets
+        // cast numElems to double so that the result preserves decimal digits
+        return ((double)numElems)/numBuckets;
+    return 0; // if number of buckets is 0, return 0
 }
+
 
 template<class T>
 void SetType<T>::ResetIterator() {
@@ -117,8 +127,10 @@ SetType<T>::~SetType() {
 template<class T>
 SetType<T> SetType<T>::operator+(T elem) {
     SetType<T> result;
+    result = *this;
 
     // Your code here
+    result.Add(elem);
 
     return result;
 }
@@ -126,8 +138,11 @@ SetType<T> SetType<T>::operator+(T elem) {
 template<class T>
 SetType<T> SetType<T>::operator-(T elem) {
     SetType<T> result;
+    result = *this;
 
     // Your code here
+    result.Remove(elem);
+
 
     return result;
 }
