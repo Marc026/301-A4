@@ -143,15 +143,27 @@ SetType<T> SetType<T>::operator-(T elem) {
     // Your code here
     result.Remove(elem);
 
-
     return result;
 }
 
 template<class T>
 SetType<T> SetType<T>::operator+(SetType& otherSet) {
-    SetType<T> result;
+    SetType<T> result(numBuckets);
 
     // Your code here
+    // Add all elements of this set to the result
+    for (int i = 0; i < numBuckets; i++) {
+        for (T elem : buckets[i]) {
+            result.Add(elem);
+        }
+    }
+
+    // Add all elements of the other set to the result
+    for (int i = 0; i < otherSet.numBuckets; i++) {
+        for (T elem : otherSet.buckets[i]) {
+            result.Add(elem);
+        }
+    }
 
     return result;
 }
