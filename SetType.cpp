@@ -173,6 +173,13 @@ SetType<T> SetType<T>::operator*(SetType& otherSet) {
     SetType<T> result;
 
     // Your code here
+    for (int i = 0; i < numBuckets; i++) {
+        for (auto it = buckets[i].begin(); it != buckets[i].end(); ++it) {
+            if (otherSet.Contains(*it)) {
+                result.Add(*it);
+            }
+        }
+    }
 
     return result;
 }
@@ -240,12 +247,16 @@ SetType<T>& SetType<T>::operator=(SetType const &other) {
     return *this;
 }
 
-
 template<class T>
 void SetType<T>::Rehash(int newNumBuckets) {
     SetType<T> rehashedSet(newNumBuckets);
 
     // Your code here
+    for (auto it = buckets->begin(); it != buckets->end(); ++it) {
+        for (auto elem : *it) {
+            rehashedSet.Add(elem); // Insert each element into the rehashed set
+        }
+    }
 
     *this = rehashedSet;
 }
