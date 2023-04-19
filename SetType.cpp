@@ -78,18 +78,15 @@ void SetType<T>::MakeEmpty() {
 
 template<class T>
 double SetType<T>::LoadFactor() const {
-    // validate number of buckets is greater than 0
-    if(numBuckets > 0)
-        // load factor = current number of elements divided by number of buckets
-        // cast numElems to double so that the result preserves decimal digits
-        return ((double)numElems)/numBuckets;
-    return 0; // if number of buckets is 0, return 0
+    return static_cast<double>(Size()) / numBuckets;
 }
 
 
 template<class T>
 void SetType<T>::ResetIterator() {
-
+    currBucket = 0;
+    iterCount = 0;
+    bucketIter = buckets[currBucket].begin();
 }
 
 template<class T>
@@ -210,6 +207,24 @@ T SetType<T>::GetNextItem() {
     T item;
 
     // Your code here
+    // If there are no more elements
+    if (iterCount >= numElems) {
+        throw IteratorOutOfBounds();
+    }
+
+    // Find the first non-empty bucket
+    while (bucketIter == buckets[currBucket].end()) {
+        currBucket++;
+        if (currBucket >= numBuckets) {
+            throw IteratorOutOfBounds();
+        }
+        bucketIter = buckets[currBucket].begin();
+    }
+
+    // Get the current item and move to the next item
+    item = *bucketIter;
+    bucketIter++;
+    iterCount++;
 
     return item;
 }
@@ -252,10 +267,8 @@ void SetType<T>::Rehash(int newNumBuckets) {
     SetType<T> rehashedSet(newNumBuckets);
 
     // Your code here
-    for (auto it = buckets->begin(); it != buckets->end(); ++it) {
-        for (auto elem : *it) {
-            rehashedSet.Add(elem); // Insert each element into the rehashed set
-        }
+    for (bucketIter = this->begin(); bucketIter != this->end(); ++bucketIter) {
+        rehashedSet.Add(*bucketIter);
     }
 
     *this = rehashedSet;
