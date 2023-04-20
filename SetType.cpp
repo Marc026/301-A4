@@ -13,11 +13,13 @@ SetType<T>::SetType() {
     numBuckets = DEFAULT_BUCKETS;
     numElems = 0;
     maxLoad = DEFAULT_LOAD_FACTOR;
+    currBucket = 0;
+    iterCount = 0;
 }
 
 template<class T>
 SetType<T>::SetType(int numBucks) {
-    this->numBuckets = numBucks;
+    numBuckets = numBucks;
     buckets = new forward_list<T>[numBucks];
     numElems = 0;
     maxLoad = DEFAULT_LOAD_FACTOR;
@@ -38,8 +40,7 @@ void SetType<T>::Add(T elem) {
     numElems++;
 
     if (LoadFactor() > maxLoad) {
-        int newNumBuckets = numBuckets * 2;
-        //Rehash(newNumBuckets);
+        Rehash(2*numBuckets);
     }
 }
 
@@ -78,7 +79,7 @@ void SetType<T>::MakeEmpty() {
 
 template<class T>
 double SetType<T>::LoadFactor() const {
-    return static_cast<double>(Size()) / numBuckets;
+    return static_cast<double>(numElems)/numBuckets;
 }
 
 
@@ -197,7 +198,6 @@ SetType<T> SetType<T>::operator-(SetType& otherSet) {
         }
     }
 
-
     return result;
 }
 
@@ -266,9 +266,10 @@ template<class T>
 void SetType<T>::Rehash(int newNumBuckets) {
     SetType<T> rehashedSet(newNumBuckets);
 
-    // Your code here
-    for (bucketIter = this->begin(); bucketIter != this->end(); ++bucketIter) {
-        rehashedSet.Add(*bucketIter);
+    for(int i = 0; i < this->numBuckets; i++){
+        for(auto it = buckets[i].begin(); it != buckets[i].end(); ++it){
+            rehashedSet.Add(*it);
+        }
     }
 
     *this = rehashedSet;
