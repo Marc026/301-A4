@@ -10,18 +10,18 @@ SetType<T>::SetType() {
     buckets = new forward_list<T>[DEFAULT_BUCKETS];
 
     // Your code here
-    numBuckets = DEFAULT_BUCKETS;
-    numElems = 0;
-    maxLoad = DEFAULT_LOAD_FACTOR;
-    currBucket = 0;
-    iterCount = 0;
+    numBuckets = DEFAULT_BUCKETS;   //set values to default values or 0
+    numElems = 0;                   //set values to default values or 0
+    maxLoad = DEFAULT_LOAD_FACTOR;  //set values to default values or 0
+    currBucket = 0;                 //set values to default values or 0
+    iterCount = 0;                  //set values to default values or 0
 }
 
 template<class T>
 SetType<T>::SetType(int numBucks) {
-    numBuckets = numBucks;
-    buckets = new forward_list<T>[numBucks];
-    numElems = 0;
+    numBuckets = numBucks;                  //set numBuckets to test size
+    buckets = new forward_list<T>[numBucks];    //make new array of forward list w/ numBucks
+    numElems = 0;                           //set values to default values or 0
     maxLoad = DEFAULT_LOAD_FACTOR;
     currBucket = 0;
     iterCount = 0;
@@ -29,29 +29,29 @@ SetType<T>::SetType(int numBucks) {
 
 template<class T>
 void SetType<T>::Add(T elem) {
-    int bucket = GetHashIndex(elem);
+    int bucket = GetHashIndex(elem);    //find which bucket elem goes into
 
     for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); it++) {
-        if (*it == elem) {
-            return;
+        if (*it == elem) {                  //look at every value in bucket
+            return;                         //and if elem exists already, return
         }
     }
-    buckets[bucket].push_front(elem);
-    numElems++;
+    buckets[bucket].push_front(elem);       //else push to front of bucket
+    numElems++;                             //book-keeping
 
-    if (LoadFactor() > maxLoad) {
-        Rehash(2*numBuckets);
+    if (LoadFactor() > maxLoad) {           //check load factor of bucket
+        Rehash(2*numBuckets);   //call Rehash
     }
 }
 
 template<class T>
 void SetType<T>::Remove(T elem) {
-    int bucket = GetHashIndex(elem);
+    int bucket = GetHashIndex(elem);    //find which bucket elem goes into
 
     for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); it++) {
-        if (*it == elem) {
-            buckets[bucket].remove(*it);
-            numElems--;
+        if (*it == elem) {                  //look at every value in bucket
+            buckets[bucket].remove(*it);    //and if elem exists already, remove it
+            numElems--;                     //book-keeping
             return;
         }
     }
@@ -61,42 +61,41 @@ template<class T>
 bool SetType<T>::Contains(T elem) {
     int bucket = GetHashIndex(elem);
     for (auto it = buckets[bucket].begin(); it != buckets[bucket].end(); ++it) {
-        if (*it == elem) {
-            return true;
+        if (*it == elem) {                  //look at every value in bucket
+            return true;                    //and if elem exists already, return true
         }
     }
-    return false;
+    return false;                           //else return false
 }
 
 template<class T>
 void SetType<T>::MakeEmpty() {
-    for (int i = 0; i < numBuckets; ++i) {
-        buckets[i].clear();
+    for (int i = 0; i < numBuckets; ++i) {  //for every bucket
+        buckets[i].clear();                 //delete everything inside bucket
     }
-    numElems = 0;
-    ResetIterator();
+    numElems = 0;           //reset book-keeping
+    ResetIterator();        //Call ResetIterator func
 }
 
 template<class T>
 double SetType<T>::LoadFactor() const {
-    return static_cast<double>(numElems)/numBuckets;
+    return static_cast<double>(numElems)/numBuckets;    //formula to calculate & return LoadFactor
 }
 
 
 template<class T>
 void SetType<T>::ResetIterator() {
-    currBucket = 0;
-    iterCount = 0;
+    currBucket = 0;                     //resets values to 0
+    iterCount = 0;                      // and back to the beginning of array
     bucketIter = buckets[currBucket].begin();
 }
 
 template<class T>
 void SetType<T>::copySet(const SetType &otherSet) {
-    // Copy over bucket count and max load factor
-    this->numBuckets = otherSet.numBuckets;
+    this->numBuckets = otherSet.numBuckets;     // Copy over bucket count and max load factor
     this->maxLoad = otherSet.maxLoad;
-    // Allocate new buckets array
-    this->buckets = new forward_list<T>[this->numBuckets];
+    this->buckets = new forward_list<T>[this->numBuckets];// Allocate new buckets array
+
     // Loop through each bucket in otherSet
     for (int i = 0; i < otherSet.numBuckets; i++) {
         // Loop through each item in the bucket
@@ -118,35 +117,35 @@ SetType<T>::SetType(SetType &otherSet) {
 
 template<class T>
 SetType<T>::~SetType() {
-    delete [] buckets;
+    delete [] buckets;  //deletes buckets
 }
 
 
 template<class T>
 SetType<T> SetType<T>::operator+(T elem) {
-    SetType<T> result;
-    result = *this;
+    SetType<T> result;  //make result object
+    result = *this;     //point to this
 
     // Your code here
-    result.Add(elem);
+    result.Add(elem);   //overloaded add elem
 
     return result;
 }
 
 template<class T>
 SetType<T> SetType<T>::operator-(T elem) {
-    SetType<T> result;
-    result = *this;
+    SetType<T> result;  //make result object
+    result = *this;     //point to this
 
     // Your code here
-    result.Remove(elem);
+    result.Remove(elem);//overloaded remove elem
 
     return result;
 }
 
 template<class T>
 SetType<T> SetType<T>::operator+(SetType& otherSet) {
-    SetType<T> result(numBuckets);
+    SetType<T> result(numBuckets);  //make result object of numBuckets
 
     // Your code here
     // Add all elements of this set to the result
@@ -171,6 +170,7 @@ SetType<T> SetType<T>::operator*(SetType& otherSet) {
     SetType<T> result;
 
     // Your code here
+    // Add all elements of this set to the result
     for (int i = 0; i < numBuckets; i++) {
         for (auto it = buckets[i].begin(); it != buckets[i].end(); ++it) {
             if (otherSet.Contains(*it)) {
@@ -264,8 +264,10 @@ SetType<T>& SetType<T>::operator=(SetType const &other) {
 
 template<class T>
 void SetType<T>::Rehash(int newNumBuckets) {
+    //make rehashedSet object of newNumBuckets
     SetType<T> rehashedSet(newNumBuckets);
 
+    // Add all elements of this set to the result
     for(int i = 0; i < this->numBuckets; i++){
         for(auto it = buckets[i].begin(); it != buckets[i].end(); ++it){
             rehashedSet.Add(*it);
