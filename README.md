@@ -37,11 +37,11 @@ and pushing regularly.
 
 Assume the set has n items and n buckets.
 
-| Function      | Big-Oh (average)    | 
-| ------------- | ------------------- |
-| Add           | O(Your answer here) |
-| Remove        | O(Your answer here) |
-| Contains      | O(Your answer here) |
+| Function      | Big-Oh (average) | 
+| ------------- |------------------|
+| Add           | O(1)             |
+| Remove        | O(n)             |
+| Contains      | O(n)             |
 
 2. (1 pt/entry) Complete the following tables of Big-Oh. 
 
@@ -50,12 +50,12 @@ You can also assume that A has n buckets and B has m buckets.  You may also
 assume n > m.  Your answers should be written in terms of m and n. (Note 
 there is no difference between average, worst, and best for these functions.)
 
-| Function      | Big-Oh              | 
-| ------------- | --------------------|
-| Union         | O(Your answer here) |
-| Intersection  | O(Your answer here) |
-| Difference    | O(Your answer here) |
-| Assignment    | O(Your answer here) |
+| Function      | Big-Oh      | 
+| ------------- |-------------|
+| Union         | O(n+m)      |
+| Intersection  | O(min(n,m)) |
+| Difference    | O(n)        |
+| Assignment    | O(n)        |
 
 3. Suppose you used the following function for GetHashIndex().
 
@@ -68,21 +68,26 @@ int GetHashIndex(const T& elem)
 
 How would this affect the Big-oh for the following functions?
 
-| Function      | Big-Oh (average)    | 
-| ------------- | ------------------- |
-| Add           | O(Your answer here) |
-| Remove        | O(Your answer here) |
-| Contains      | O(Your answer here) |
+| Function      | Big-Oh (average) | 
+| ------------- |------------------|
+| Add           | O(n)             |
+| Remove        | O(n)             |
+| Contains      | O(n)             |
 
 4.  (1pts) Suppose you have n items and k*n buckets.  What would be the load
     factor in this case?
 
-    > Your answer here
+    > Load Factor is still numElems / numBuckets but with n items and k*n buckets, the Load Factor would be 
+    > = n / (k*n)
+    > = 1/k
 
 5.  (4pts) What would be the optimal number of buckets to have with
     respect to runtime if you have n items?
 
-    > Your answer here
+    > The optimal # of buckets would be to have 1.5 or 2 times the # of buckets as a general rule of thumb.
+      There is no fixed optimal number of buckets for a hash table with respect to runtime when you have n items.
+      It depends on the specific requirements and characteristics of the application, and it may require 
+      experimentation and tuning to find the optimal number of buckets for a particular use case.
 
     
 ## Recommended Implementation Order
